@@ -125,7 +125,7 @@ macro(build_ogre)
     set(OGRE_CXX_FLAGS "${OGRE_CXX_FLAGS} /w /EHsc")
   elseif(APPLE)
     set(OGRE_CXX_FLAGS "${OGRE_CXX_FLAGS} -std=c++14 -stdlib=libc++ -w")
-    list(APPEND extra_cmake_args "-DCMAKE_OSX_ARCHITECTURES='x86_64'")
+    list(APPEND extra_cmake_args "-DCMAKE_OSX_ARCHITECTURES='arm64'")
   else()  # Linux
     set(OGRE_C_FLAGS "${OGRE_C_FLAGS} -w")
     # include Clang -Wno-everything to disable warnings in that build. GCC doesn't mind it
@@ -162,8 +162,7 @@ macro(build_ogre)
   find_package(Patch REQUIRED)
   include(ExternalProject)
   ExternalProject_Add(ogre-v1.12.10
-    URL https://github.com/OGRECave/ogre/archive/v1.12.10.zip
-    URL_MD5 c1b870955efddf539385094e9034e7f7
+    URL https://github.com/TakanoTaiga/rviz/releases/download/test/ogre-1.12.10.zip
     TIMEOUT 1200
     LOG_CONFIGURE ${should_log}
     LOG_BUILD ${should_log}
@@ -188,15 +187,9 @@ macro(build_ogre)
       -DOGRE_BUILD_COMPONENT_BITES:BOOL=FALSE
       -DOGRE_BUILD_PLUGIN_DOT_SCENE:BOOL=FALSE
       -DOGRE_BUILD_TOOLS:BOOL=FALSE
+      -DOGRE_ENABLE_PRECOMPILED_HEADERS:BOOL=OFF
       ${extra_cmake_args}
       -Wno-dev
-    PATCH_COMMAND
-      ${Patch_EXECUTABLE} -p1 -N < ${CMAKE_CURRENT_SOURCE_DIR}/pragma-patch.diff &&
-      ${Patch_EXECUTABLE} -p1 -N < ${CMAKE_CURRENT_SOURCE_DIR}/relocatable.patch &&
-      ${Patch_EXECUTABLE} -p1 -N < ${CMAKE_CURRENT_SOURCE_DIR}/featuresummary-rename.patch &&
-      ${Patch_EXECUTABLE} -p1 -N < ${CMAKE_CURRENT_SOURCE_DIR}/C4267.patch
-    COMMAND
-      ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/FindFreetype.cmake ${CMAKE_CURRENT_BINARY_DIR}/ogre-v1.12.10-prefix/src/ogre-v1.12.10/CMake/Packages/FindFreetype.cmake
   )
 
   if(BUILDING_FREETYPE_LOCALLY)

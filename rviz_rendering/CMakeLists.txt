@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.5)
 
 project(rviz_rendering)
 
+set(CMAKE_PREFIX_PATH /opt/homebrew/opt/qt@5 ${CMAKE_PREFIX_PATH})
+set(CMAKE_PREFIX_PATH /opt/homebrew/opt/eigen ${CMAKE_PREFIX_PATH})
+
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
